@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ví dụ HTML cơ bản</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+            padding: 50px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        img {
+            width: 200px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chào mừng đến với ví dụ HTML!</h1>
+    <p>Đây là một trang HTML đơn giản với hình ảnh và nút bấm.</p>
+    
+    <img src="https://via.placeholder.com/200" alt="Hình ví dụ">
+
+    <br>
+    <button onclick="hienThiThongBao()">Nhấn vào tôi!</button>
+
+    <script>
+        function hienThiThongBao() {
+            alert("Bạn vừa nhấn nút!");
+        }
+    </script>
+</body>
+</html>
