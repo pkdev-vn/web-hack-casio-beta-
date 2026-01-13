@@ -1,2 +1,3 @@
 # web-hack-casio-beta-
-(beta) web 
+hello, wellcome to my repository i'm pkdev 
+this is web (beta) you can vist and comment it you want :)
