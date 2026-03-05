@@ -3,38 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ví dụ HTML cơ bản</title>
+    <title>Giao Diện Có Thanh Điều Hướng Glow</title>
     <style>
-        body {
+        /* Đặt lại lề mặc định để giao diện gọn gàng */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            text-align: center;
-            padding: 50px;
         }
-        button {
-            padding: 10px 20px;
+
+        /* Khung chứa toàn bộ trang */
+        body {
+            background-color: #f4f4f9; /* Màu nền cho trang chính */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Chiều cao tối thiểu bằng toàn bộ màn hình */
+        }
+
+        /* --- THANH ĐIỀU HƯỚNG BÊN TRÊN --- */
+        .navbar {
+            background-color: #007bff; /* Màu xanh dương */
+            color: white; /* Chữ màu trắng */
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            /* Hiệu ứng Glow (Phát sáng) cho thanh điều hướng */
+            box-shadow: 0 0 20px 5px rgba(0, 123, 255, 0.6); 
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Văn bản bên trái */
+        .nav-brand {
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: 40px; /* Tạo khoảng cách với các lựa chọn bên cạnh */
+            text-transform: uppercase;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8); /* Thêm chút glow cho chữ */
+        }
+
+        /* Các lựa chọn bên cạnh */
+        .nav-menu {
+            list-style: none; /* Bỏ dấu chấm của danh sách */
+            display: flex;
+            gap: 25px; /* Khoảng cách giữa các lựa chọn */
+        }
+
+        .nav-menu li a {
+            color: white; /* Chữ màu trắng */
+            text-decoration: none; /* Bỏ gạch chân */
             font-size: 16px;
-            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
-        img {
-            width: 200px;
-            margin: 20px 0;
+
+        /* Hiệu ứng phát sáng nhẹ khi di chuột vào các lựa chọn */
+        .nav-menu li a:hover {
+            text-shadow: 0 0 10px white, 0 0 20px white;
+        }
+
+        /* --- PHẦN TRANG CHÍNH --- */
+        .main-content {
+            flex: 1; /* Tự động kéo dãn lấp đầy phần chiều cao còn lại */
+            display: flex;
+            justify-content: center; /* Căn giữa theo chiều ngang */
+            align-items: center; /* Căn giữa theo chiều dọc */
+        }
+
+        .main-title {
+            font-size: 45px;
+            color: #333;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <h1>Wellcome to hack casio web</h1>
-    <p>This is a web beta </p>
-    
-    <img src="https://meta.vn/casio.html" alt="test :)">
 
-    <br>
-    <button onclick="hienThiThongBao()">click me :)</button>
+    <nav class="navbar">
+        <div class="nav-brand">Logo / Văn Bản</div>
+        <ul class="nav-menu">
+            <li><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+        </ul>
+    </nav>
 
-    <script>
-        function hienThiThongBao() {
-            alert("test :)");
-        }
-    </script>
+    <main class="main-content">
+        <h1 class="main-title">Tiêu Đề Nằm Ở Chính Giữa</h1>
+    </main>
+
 </body>
 </html>
