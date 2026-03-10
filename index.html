@@ -1,100 +1,104 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hack casio</title>
-    <style>
-        /* Đặt lại lề mặc định để giao diện gọn gàng */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hack casio</title>
 
-        /* Khung chứa toàn bộ trang */
-        body {
-            background-color: #f4f4f9; /* Màu nền cho trang chính */
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh; /* Chiều cao tối thiểu bằng toàn bộ màn hình */
-        }
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
 
-        /* --- THANH ĐIỀU HƯỚNG BÊN TRÊN --- */
-        .navbar {
-            background-color: #ff2400; /* Màu xanh dương */
-            color: white; /* Chữ màu trắng */
-            padding: 15px 30px;
-            display: flex;
-            align-items: center;
-            /* Hiệu ứng Glow (Phát sáng) cho thanh điều hướng */
-            box-shadow: 0 0 20px 5px rgba(255, 0, 0, 0.7); 
-            position: relative;
-            z-index: 10;
-        }
+body{
+    background-color:#f4f4f9;
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+}
 
-        /* Văn bản bên trái */
-        .nav-brand {
-            font-size: 24px;
-            font-weight: bold;
-            margin-right: 40px; /* Tạo khoảng cách với các lựa chọn bên cạnh */
-            text-transform: uppercase;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8); /* Thêm chút glow cho chữ */
-        }
+/* thanh trên */
+.navbar{
+    background-color:#ff2400;
+    color:white;
+    padding:15px 30px;
+    display:flex;
+    align-items:center;
+    box-shadow:0 0 20px 5px rgba(255,0,0,0.7);
+}
 
-        /* Các lựa chọn bên cạnh */
-        .nav-menu {
-            list-style: none; /* Bỏ dấu chấm của danh sách */
-            display: flex;
-            gap: 25px; /* Khoảng cách giữa các lựa chọn */
-        }
+.nav-brand{
+    font-size:24px;
+    font-weight:bold;
+    margin-right:40px;
+    text-transform:uppercase;
+}
 
-        .nav-menu li a {
-            color: white; /* Chữ màu trắng */
-            text-decoration: none; /* Bỏ gạch chân */
-            font-size: 16px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
+.nav-menu{
+    list-style:none;
+    display:flex;
+    gap:25px;
+}
 
-        /* Hiệu ứng phát sáng nhẹ khi di chuột vào các lựa chọn */
-        .nav-menu li a:hover {
-            text-shadow: 0 0 10px white, 0 0 20px white;
-        }
+.nav-menu li a{
+    color:white;
+    text-decoration:none;
+    font-size:16px;
+}
 
-        /* --- PHẦN TRANG CHÍNH --- */
-        .main-content {
-            flex: 1; 
-            display: flex;
-            justify-content: flex-end; 
-            align-items: center;
-            padding-right: 300px;
-            padding-top: 50px;
-        }
+.nav-menu li a:hover{
+    text-shadow:0 0 10px white;
+}
 
-        .main-title {
-            font-size: 48px;
-            color: #333;
-            text-align: left;
-        }
-    </style>
+/* nội dung */
+.main-content{
+    flex:1;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:60px;
+}
+
+/* ảnh bên trái */
+.left img{
+    width:350px;
+}
+
+/* chữ bên phải */
+.right{
+    font-size:45px;
+    color:#333;
+}
+</style>
 </head>
+
 <body>
 
-    <nav class="navbar">
-        <div class="nav-brand">Hack casio</div>
-        <ul class="nav-menu">
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-        </ul>
-    </nav>
+<nav class="navbar">
+<div class="nav-brand">Hack casio</div>
 
-    <main class="main-content">
-        <h1 class="main-title">Nhìn cái j nữa</h1>
-    </main>
+<ul class="nav-menu">
+<li><a href="#">1</a></li>
+<li><a href="#">2</a></li>
+<li><a href="#">3</a></li>
+<li><a href="#">4</a></li>
+</ul>
+</nav>
+
+<main class="main-content">
+
+<div class="left">
+<img src="https://via.placeholder.com/350" alt="ảnh">
+</div>
+
+<div class="right">
+<h1>Nhìn cái j nữa</h1>
+</div>
+
+</main>
 
 </body>
 </html>
