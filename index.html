@@ -3,248 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Casio Modding Hub | fx-580VN X & Hơn Thế Nữa</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>CASIO HACK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --surface-color: #111827;
-            --card-bg: #1f2937;
-            --primary-glow: #0ea5e9;
-            --secondary-glow: #8b5cf6;
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
+            --primary-red: #ff0000;
+            --dark-red: #8b0000;
+            --bg-black: #0a0a0a;
+            --card-bg: #141414;
+            --text-white: #ffffff;
+            --text-gray: #a0a0a0;
+            --border: #222;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            background-color: var(--bg-black);
+            color: var(--text-white);
             line-height: 1.6;
-            overflow-x: hidden;
+            padding-top: 80px;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed; top: 0; width: 100%; height: 70px;
+            background: rgba(10, 10, 10, 0.95);
+            border-bottom: 2px solid var(--primary-red);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 5%; z-index: 1000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+        }
+
+        .logo {
+            font-family: 'Fira Code', monospace;
+            font-weight: 700; font-size: 1.5rem;
+            color: var(--primary-red); text-decoration: none;
+            text-transform: uppercase; letter-spacing: 2px;
         }
 
         /* Hero Section */
-        header {
-            text-align: center;
-            padding: 100px 20px 60px;
-            background: radial-gradient(circle at top, #1e3a8a 0%, var(--bg-color) 70%);
-            border-bottom: 1px solid #374151;
+        .hero {
+            text-align: center; padding: 60px 20px;
+            background: linear-gradient(to bottom, #2a0000, var(--bg-black));
         }
 
-        h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            background: linear-gradient(to right, #38bdf8, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
-            font-family: 'Fira Code', monospace;
+        .hero h1 { font-size: 3rem; margin-bottom: 10px; font-family: 'Fira Code'; }
+        .hero span { color: var(--primary-red); }
+
+        /* Main Container */
+        .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+
+        /* Đăng bài Section */
+        .post-box {
+            background: var(--card-bg); border: 1px solid var(--border);
+            padding: 30px; border-radius: 10px; margin-bottom: 50px;
+            box-shadow: inset 0 0 10px rgba(255, 0, 0, 0.05);
         }
 
-        p.subtitle {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto;
+        .post-box h2 { color: var(--primary-red); margin-bottom: 20px; font-size: 1.2rem; text-transform: uppercase; }
+
+        .input-group { margin-bottom: 15px; }
+        input, textarea {
+            width: 100%; padding: 12px; background: #000;
+            border: 1px solid var(--border); color: #fff;
+            border-radius: 5px; font-family: 'Inter';
+        }
+        input:focus, textarea:focus { border-color: var(--primary-red); outline: none; }
+
+        .btn-post {
+            background: var(--primary-red); color: #fff;
+            border: none; padding: 12px 25px; border-radius: 5px;
+            font-weight: 700; cursor: pointer; text-transform: uppercase;
+            transition: 0.3s; width: 100%;
+        }
+        .btn-post:hover { background: var(--dark-red); box-shadow: 0 0 15px var(--primary-red); }
+
+        /* Feed Section */
+        .feed-title {
+            border-left: 4px solid var(--primary-red);
+            padding-left: 15px; margin-bottom: 25px; font-family: 'Fira Code';
         }
 
-        /* Container & Grid */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
+        #postFeed { display: flex; flex-direction: column; gap: 20px; }
+
+        .post-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            padding: 20px; border-radius: 8px; position: relative;
+            animation: fadeIn 0.5s ease;
         }
 
-        .section-title {
-            font-size: 2rem;
-            margin-bottom: 30px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #374151;
-            font-family: 'Fira Code', monospace;
-            color: #e0e7ff;
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .post-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .post-user { color: var(--primary-red); font-weight: 700; font-family: 'Fira Code'; }
+        .post-time { font-size: 0.8rem; color: var(--text-gray); }
+
+        .post-body { color: #ddd; white-space: pre-wrap; }
+
+        .delete-btn {
+            background: none; border: none; color: #ff4d4d;
+            cursor: pointer; font-size: 0.8rem; text-decoration: underline;
+            margin-top: 10px; padding: 0;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
-            margin-bottom: 60px;
-        }
-
-        /* Modern Cards */
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 16px;
-            padding: 25px;
-            border: 1px solid #374151;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, transparent, var(--primary-glow));
-            transition: all 0.4s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px -10px rgba(14, 165, 233, 0.3);
-            border-color: #4b5563;
-        }
-
-        .card:hover::before {
-            left: 0;
-        }
-
-        .card-tag {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            letter-spacing: 0.5px;
-        }
-
-        .tag-text { background: rgba(56, 189, 248, 0.1); color: #38bdf8; }
-        .tag-draw { background: rgba(167, 139, 250, 0.1); color: #a78bfa; }
-        .tag-exploit { background: rgba(244, 63, 94, 0.1); color: #f43f5e; }
-        .tag-tool { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-
-        .card h3 {
-            font-size: 1.4rem;
-            margin-bottom: 15px;
-            color: #fff;
-        }
-
-        .card p {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background: transparent;
-            color: #fff;
-            text-decoration: none;
-            border: 1px solid #4b5563;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: all 0.2s;
-            cursor: pointer;
-            font-family: 'Fira Code', monospace;
-        }
-
-        .btn:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: var(--primary-glow);
-            color: var(--primary-glow);
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 40px;
-            background-color: var(--surface-color);
-            border-top: 1px solid #374151;
-            margin-top: 40px;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        code {
-            background: #111827;
-            padding: 2px 6px;
-            border-radius: 4px;
-            color: #38bdf8;
-            font-family: 'Fira Code', monospace;
-        }
+        footer { text-align: center; padding: 40px; color: var(--text-gray); font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Casio Exploits & Mods</h1>
-        <p class="subtitle">Tài liệu tổng hợp các phương pháp Basic Overflow, chỉnh sửa mã Hex, vẽ đồ họa và can thiệp hệ thống dành cho dòng máy Casio khoa học.</p>
-    </header>
+    <nav class="navbar">
+        <a href="#" class="logo">> CASIO.EXE</a>
+        <div style="color: white; font-size: 0.9rem;">ADMIN CONSOLE</div>
+    </nav>
+
+    <div class="hero">
+        <h1>SYSTEM <span>CORE</span> MOD</h1>
+        <p>Giao diện đăng bài và quản lý Exploit cho cộng đồng Mod Casio</p>
+    </div>
 
     <div class="container">
-        <h2 class="section-title">> Text_&_Font_Manipulation</h2>
-        <div class="grid">
-            <div class="card">
-                <span class="card-tag tag-text">FONT SYSTEM</span>
-                <h3>Viết Chữ In Hoa (1-4 Dòng)</h3>
-                <p>Hướng dẫn chi tiết cách dùng Basic Overflow kết hợp <code>CONTROLLING PART</code> để ép máy tính hiển thị văn bản in hoa toàn màn hình.</p>
-                <a href="#" class="btn">Đọc tài liệu</a>
+        
+        <section class="post-box">
+            <h2>[+] Tạo bài đăng mới</h2>
+            <div class="input-group">
+                <input type="text" id="username" placeholder="Tên của bạn (VD: nam)...">
             </div>
-            <div class="card">
-                <span class="card-tag tag-text">CACHE AREA</span>
-                <h3>Tiếng Việt & Lowercase</h3>
-                <p>Sử dụng Cache Area (Kí tự ô trống HEX 19) để thay đổi và nhân đôi kí tự BCDKT, viết Tiếng Việt chuẩn xác trên 1 hoặc nhiều dòng.</p>
-                <a href="#" class="btn">Đọc tài liệu</a>
+            <div class="input-group">
+                <textarea id="postContent" rows="4" placeholder="Nhập mã ROP, Hex Payload hoặc nội dung hướng dẫn v.v"></textarea>
             </div>
-            <div class="card">
-                <span class="card-tag tag-text">SMALL FONT</span>
-                <h3>Phông Chữ Nhỏ (Small Font)</h3>
-                <p>Kích hoạt LineIO và dùng mã Hex để hiển thị font chữ nhỏ đặc biệt. Bao gồm cách xuất chữ 1 dòng và 3 dòng phức tạp.</p>
-                <a href="#" class="btn">Đọc tài liệu</a>
-            </div>
-        </div>
+            <button class="btn-post" onclick="publishPost()">Đăng lên hệ thống</button>
+        </section>
 
-        <h2 class="section-title">> Graphics_&_Pixel_Art</h2>
-        <div class="grid">
-            <div class="card">
-                <span class="card-tag tag-draw">GRAPHICS</span>
-                <h3>Phương Pháp Vẽ (V1 & V2)</h3>
-                <p>Khai thác Mode <code>100+13an</code>, sử dụng chương trình quickcpy và chuỗi HEX ROP payloads để render điểm ảnh (pixels) trực tiếp trên màn hình 580VN X.</p>
-                <a href="#" class="btn">Đọc tài liệu</a>
+        <h2 class="feed-title">Dòng thời gian Exploit</h2>
+        <div id="postFeed">
             </div>
-        </div>
 
-        <h2 class="section-title">> System_Glitches_&_Tools</h2>
-        <div class="grid">
-            <div class="card">
-                <span class="card-tag tag-exploit">EXPLOITS</span>
-                <h3>Lỗi Hệ Thống & Khóa Máy</h3>
-                <p>Khám phá các lỗi thú vị: Khóa máy an toàn (mở bằng SHIFT 7), khóa máy nguy hiểm, làm loạn menu và ép máy tính sai kết quả.</p>
-                <a href="#" class="btn">Đọc tài liệu</a>
-            </div>
-            <div class="card">
-                <span class="card-tag tag-tool">RESOURCES</span>
-                <h3>Bảng Kí Tự Hex (Char Table)</h3>
-                <p>Bảng tra cứu toàn bộ mã Hex từ <code>10</code> đến <code>7C</code>, hiển thị kí tự tương ứng và các công thức chuyển đổi BCDKT.</p>
-                <a href="#" class="btn">Đọc tài liệu</a>
-            </div>
-            <div class="card">
-                <span class="card-tag tag-tool">COMPILER</span>
-                <h3>HD Compiler VN</h3>
-                <p>Công cụ biên dịch mã nguồn hỗ trợ tạo payload và tự động hóa quá trình tính toán mã Hex cho máy tính Casio.</p>
-                <a href="#" class="btn">Tải xuống</a>
-            </div>
-        </div>
     </div>
 
     <footer>
-        <p>Developed with passion. Casio architecture modding & ROP payload integration.</p>
+        &copy; CASIO HACK
     </footer>
 
+    <script>
+        // Hàm load bài đăng từ LocalStorage khi mở trang
+        window.onload = function() {
+            displayPosts();
+        };
+
+        function publishPost() {
+            const user = document.getElementById('username').value;
+            const content = document.getElementById('postContent').value;
+
+            if (user.trim() === "" || content.trim() === "") {
+                alert("Vui lòng nhập tên và nội dung!");
+                return;
+            }
+
+            const newPost = {
+                id: Date.now(),
+                author: user,
+                body: content,
+                time: new Date().toLocaleString('vi-VN')
+            };
+
+            // Lấy danh sách cũ, thêm bài mới, lưu lại
+            let posts = JSON.parse(localStorage.getItem('casioPosts')) || [];
+            posts.unshift(newPost); // Đưa bài mới lên đầu
+            localStorage.setItem('casioPosts', JSON.stringify(posts));
+
+            // Xóa form và cập nhật hiển thị
+            document.getElementById('username').value = "";
+            document.getElementById('postContent').value = "";
+            displayPosts();
+        }
+
+        function displayPosts() {
+            const feed = document.getElementById('postFeed');
+            const posts = JSON.parse(localStorage.getItem('casioPosts')) || [];
+            
+            feed.innerHTML = ""; // Xóa feed cũ để vẽ lại
+
+            posts.forEach(post => {
+                const card = document.createElement('div');
+                card.className = 'post-card';
+                card.innerHTML = `
+                    <div class="post-header">
+                        <span class="post-user">${post.author}</span>
+                        <span class="post-time">${post.time}</span>
+                    </div>
+                    <div class="post-body">${post.body}</div>
+                    <button class="delete-btn" onclick="deletePost(${post.id})">Xóa bài này</button>
+                `;
+                feed.appendChild(card);
+            });
+        }
+
+        function deletePost(postId) {
+            if(confirm("Bạn có chắc muốn xóa bài này không?")) {
+                let posts = JSON.parse(localStorage.getItem('casioPosts')) || [];
+                posts = posts.filter(p => p.id !== postId);
+                localStorage.setItem('casioPosts', JSON.stringify(posts));
+                displayPosts();
+            }
+        }
+    </script>
 </body>
 </html>
