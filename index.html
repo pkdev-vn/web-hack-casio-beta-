@@ -3,211 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CASIO HACK</title>
+    <title>CASIO MODDER - RED DASHBOARD</title>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-red: #ff0000;
-            --dark-red: #8b0000;
-            --bg-black: #0a0a0a;
-            --card-bg: #141414;
-            --text-white: #ffffff;
-            --text-gray: #a0a0a0;
-            --border: #222;
+            --bg-black: #050505;
+            --nav-bg: #000000;
+            --card-bg: #111111;
+            --text-main: #ffffff;
+            --text-dim: #888;
+            --border: #1a1a1a;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-black);
-            color: var(--text-white);
-            line-height: 1.6;
-            padding-top: 80px;
+            color: var(--text-main);
+            padding-top: 65px;
         }
 
-        /* Navbar */
-        .navbar {
-            position: fixed; top: 0; width: 100%; height: 70px;
-            background: rgba(10, 10, 10, 0.95);
-            border-bottom: 2px solid var(--primary-red);
+        /* --- THANH TRÊN CÙNG (TOPBAR) --- */
+        nav {
+            position: fixed; top: 0; left: 0; width: 100%; height: 65px;
+            background: var(--nav-bg);
+            border-bottom: 1px solid var(--primary-red);
             display: flex; align-items: center; justify-content: space-between;
-            padding: 0 5%; z-index: 1000;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+            padding: 0 40px; z-index: 1000;
         }
 
+        .nav-left { display: flex; align-items: center; gap: 40px; }
+        
         .logo {
             font-family: 'Fira Code', monospace;
-            font-weight: 700; font-size: 1.5rem;
+            font-weight: 700; font-size: 1.3rem;
             color: var(--primary-red); text-decoration: none;
-            text-transform: uppercase; letter-spacing: 2px;
+            letter-spacing: -1px;
         }
 
-        /* Hero Section */
-        .hero {
-            text-align: center; padding: 60px 20px;
-            background: linear-gradient(to bottom, #2a0000, var(--bg-black));
+        .menu-links { display: flex; gap: 25px; list-style: none; }
+        .menu-links a {
+            text-decoration: none; color: var(--text-dim);
+            font-size: 0.9rem; font-weight: 500; transition: 0.3s;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .menu-links a:hover { color: var(--primary-red); }
+
+        .btn-post-nav {
+            background: var(--primary-red); color: white;
+            border: none; padding: 10px 22px; border-radius: 4px;
+            font-weight: 700; cursor: pointer; font-size: 0.85rem;
+            font-family: 'Fira Code'; transition: 0.2s;
+        }
+        .btn-post-nav:hover { background: #cc0000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); }
+
+        /* --- KHÔNG GIAN CHÍNH --- */
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+
+        .welcome-hero { margin-bottom: 60px; }
+        .welcome-hero h1 { font-size: 3.5rem; line-height: 1.1; margin-bottom: 15px; }
+        .welcome-hero span { color: var(--primary-red); }
+        .welcome-hero p { color: var(--text-dim); font-size: 1.2rem; max-width: 700px; }
+
+        /* --- GRID NỘI DUNG --- */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
         }
 
-        .hero h1 { font-size: 3rem; margin-bottom: 10px; font-family: 'Fira Code'; }
-        .hero span { color: var(--primary-red); }
+        .info-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            padding: 30px; border-radius: 8px; transition: 0.3s;
+        }
+        .info-card:hover { border-color: var(--primary-red); transform: translateY(-5px); }
+        .info-card h3 { color: var(--primary-red); margin-bottom: 15px; font-family: 'Fira Code'; }
+        .info-card p { font-size: 0.9rem; color: #ccc; }
 
-        /* Main Container */
-        .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
-
-        /* Đăng bài Section */
+        /* --- PHẦN ĐĂNG NỘI DUNG (MẪU) --- */
+        .post-section { margin-top: 80px; border-top: 1px solid var(--border); padding-top: 40px; }
         .post-box {
-            background: var(--card-bg); border: 1px solid var(--border);
-            padding: 30px; border-radius: 10px; margin-bottom: 50px;
-            box-shadow: inset 0 0 10px rgba(255, 0, 0, 0.05);
+            background: #000; border: 1px dashed var(--primary-red);
+            padding: 20px; border-radius: 8px; margin-top: 20px;
         }
 
-        .post-box h2 { color: var(--primary-red); margin-bottom: 20px; font-size: 1.2rem; text-transform: uppercase; }
-
-        .input-group { margin-bottom: 15px; }
-        input, textarea {
-            width: 100%; padding: 12px; background: #000;
-            border: 1px solid var(--border); color: #fff;
-            border-radius: 5px; font-family: 'Inter';
-        }
-        input:focus, textarea:focus { border-color: var(--primary-red); outline: none; }
-
-        .btn-post {
-            background: var(--primary-red); color: #fff;
-            border: none; padding: 12px 25px; border-radius: 5px;
-            font-weight: 700; cursor: pointer; text-transform: uppercase;
-            transition: 0.3s; width: 100%;
-        }
-        .btn-post:hover { background: var(--dark-red); box-shadow: 0 0 15px var(--primary-red); }
-
-        /* Feed Section */
-        .feed-title {
-            border-left: 4px solid var(--primary-red);
-            padding-left: 15px; margin-bottom: 25px; font-family: 'Fira Code';
-        }
-
-        #postFeed { display: flex; flex-direction: column; gap: 20px; }
-
-        .post-card {
-            background: var(--card-bg); border: 1px solid var(--border);
-            padding: 20px; border-radius: 8px; position: relative;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .post-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .post-user { color: var(--primary-red); font-weight: 700; font-family: 'Fira Code'; }
-        .post-time { font-size: 0.8rem; color: var(--text-gray); }
-
-        .post-body { color: #ddd; white-space: pre-wrap; }
-
-        .delete-btn {
-            background: none; border: none; color: #ff4d4d;
-            cursor: pointer; font-size: 0.8rem; text-decoration: underline;
-            margin-top: 10px; padding: 0;
-        }
-
-        footer { text-align: center; padding: 40px; color: var(--text-gray); font-size: 0.8rem; }
+        footer { text-align: center; padding: 60px 0; color: #333; font-family: 'Fira Code'; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <a href="#" class="logo">> CASIO.EXE</a>
-        <div style="color: white; font-size: 0.9rem;">ADMIN CONSOLE</div>
+    <nav>
+        <div class="nav-left">
+            <a href="#" class="logo">CASIO.PKDEV</a>
+            <ul class="menu-links">
+                <li><a href="#docs">Tài liệu</a></li>
+                <li><a href="#newbie">Cho Newbie</a></li>
+                <li><a href="#compiler">Compiler</a></li>
+                <li><a href="#info">Thông tin</a></li>
+            </ul>
+        </div>
+        <button class="btn-post-nav">ĐĂNG NỘI DUNG</button>
     </nav>
 
-    <div class="hero">
-        <h1>SYSTEM <span>CORE</span> MOD</h1>
-        <p>Giao diện đăng bài và quản lý Exploit cho cộng đồng Mod Casio</p>
-    </div>
-
     <div class="container">
-        
-        <section class="post-box">
-            <h2>[+] Tạo bài đăng mới</h2>
-            <div class="input-group">
-                <input type="text" id="username" placeholder="Tên của bạn (VD: nam)...">
+        <header class="welcome-hero">
+            <h1>Chào mừng tới<br><span>Exploit Center</span></h1>
+            <p>Hệ thống lưu trữ kỹ thuật modding máy tính Casio fx-580VN X chuyên sâu. Khám phá các lỗi hệ thống, mã Hex và phương pháp vẽ đồ họa.</p>
+        </header>
+
+        <div class="content-grid">
+            <div id="newbie" class="info-card">
+                <h3>// CHO NEWBIE</h3>
+                <p>Bắt đầu từ đâu? Tìm hiểu về Basic Overflow cơ bản, cách vào chế độ MathIO và các khái niệm sơ khai về bộ nhớ máy tính.</p>
             </div>
-            <div class="input-group">
-                <textarea id="postContent" rows="4" placeholder="Nhập mã ROP, Hex Payload hoặc nội dung hướng dẫn v.v"></textarea>
+
+            <div id="docs" class="info-card">
+                <h3>// TÀI LIỆU</h3>
+                <p>Tổng hợp các file PDF về Font chữ In Hoa, chữ nhỏ 1-3 dòng và bảng mã kí tự Hex đầy đủ nhất.</p>
             </div>
-            <button class="btn-post" onclick="publishPost()">Đăng lên hệ thống</button>
+
+            <div id="compiler" class="info-card">
+                <h3>// COMPILER</h3>
+                <p>Công cụ hỗ trợ biên dịch mã nguồn và tạo Payload cho Casio. Tối ưu hóa quá trình modding của bạn.</p>
+            </div>
+
+            <div id="info" class="info-card">
+                <h3>// THÔNG TIN</h3>
+                <p>Thông tin về phiên bản hệ điều hành, các dòng máy hỗ trợ và các cập nhật mới nhất từ cộng đồng.</p>
+            </div>
+        </div>
+
+        <section class="post-section">
+            <h2 style="font-family: 'Fira Code';">> LATEST_POSTS</h2>
+            <div class="post-box">
+                <p style="color: var(--primary-red); font-weight: bold;">@Admin:</p>
+                <p>Hệ thống giao diện đã sẵn sàng. Bạn có thể sử dụng các mục phía trên để tra cứu tài liệu.</p>
+            </div>
         </section>
-
-        <h2 class="feed-title">Dòng thời gian Exploit</h2>
-        <div id="postFeed">
-            </div>
-
     </div>
 
     <footer>
-        &copy; CASIO HACK
+        DESIGNED FOR CASIO EXPLOITERS - 2026
     </footer>
 
-    <script>
-        // Hàm load bài đăng từ LocalStorage khi mở trang
-        window.onload = function() {
-            displayPosts();
-        };
-
-        function publishPost() {
-            const user = document.getElementById('username').value;
-            const content = document.getElementById('postContent').value;
-
-            if (user.trim() === "" || content.trim() === "") {
-                alert("Vui lòng nhập tên và nội dung!");
-                return;
-            }
-
-            const newPost = {
-                id: Date.now(),
-                author: user,
-                body: content,
-                time: new Date().toLocaleString('vi-VN')
-            };
-
-            // Lấy danh sách cũ, thêm bài mới, lưu lại
-            let posts = JSON.parse(localStorage.getItem('casioPosts')) || [];
-            posts.unshift(newPost); // Đưa bài mới lên đầu
-            localStorage.setItem('casioPosts', JSON.stringify(posts));
-
-            // Xóa form và cập nhật hiển thị
-            document.getElementById('username').value = "";
-            document.getElementById('postContent').value = "";
-            displayPosts();
-        }
-
-        function displayPosts() {
-            const feed = document.getElementById('postFeed');
-            const posts = JSON.parse(localStorage.getItem('casioPosts')) || [];
-            
-            feed.innerHTML = ""; // Xóa feed cũ để vẽ lại
-
-            posts.forEach(post => {
-                const card = document.createElement('div');
-                card.className = 'post-card';
-                card.innerHTML = `
-                    <div class="post-header">
-                        <span class="post-user">${post.author}</span>
-                        <span class="post-time">${post.time}</span>
-                    </div>
-                    <div class="post-body">${post.body}</div>
-                    <button class="delete-btn" onclick="deletePost(${post.id})">Xóa bài này</button>
-                `;
-                feed.appendChild(card);
-            });
-        }
-
-        function deletePost(postId) {
-            if(confirm("Bạn có chắc muốn xóa bài này không?")) {
-                let posts = JSON.parse(localStorage.getItem('casioPosts')) || [];
-                posts = posts.filter(p => p.id !== postId);
-                localStorage.setItem('casioPosts', JSON.stringify(posts));
-                displayPosts();
-            }
-        }
-    </script>
 </body>
 </html>
