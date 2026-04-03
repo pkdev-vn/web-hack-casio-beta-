@@ -19,17 +19,47 @@
 </head>
 <body>
   <script>
-    // Chống chuột phải
-    document.addEventListener('contextmenu', event => event.preventDefault());
+    // 1. Chống chuột phải (Context Menu)
+    document.addEventListener('contextmenu', e => e.preventDefault());
 
-    // Chống các phím tắt F12, Ctrl+Shift+I, Ctrl+U
+    // 2. Chặn các phím tắt xâm nhập (F12, Ctrl+U, Ctrl+Shift+I, Ctrl+S)
     document.onkeydown = function(e) {
-        if (e.keyCode == 123 || 
-            (e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) || 
-            (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0))) {
+        if (
+            e.keyCode == 123 || // F12
+            (e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0))) || // Inspect
+            (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) || // View Source
+            (e.ctrlKey && e.keyCode == 'S'.charCodeAt(0))    // Save Page
+        ) {
+            alert("⚠️ Cảnh báo: Hành động này bị nghiêm cấm để bảo vệ bản quyền!");
             return false;
         }
     };
+
+    // 3. "Bẫy" Debugger: Nếu họ cố tình mở Inspect Element bằng menu trình duyệt, 
+    // trang web sẽ liên tục bị khựng lại (Pause), khiến họ không thể soi code.
+    (function() {
+        const check = function() {
+            (function(a) {
+                target = "debugger";
+                (function test() {
+                    if (typeof console !== 'undefined') {
+                        // Kích hoạt debugger liên tục
+                        eval(target);
+                    }
+                    test();
+                })();
+            })(0);
+        };
+        // Chạy kiểm tra ngầm
+        try { check(); } catch (e) {}
+    })();
+
+    // 4. Xóa sạch dấu vết Console
+    setInterval(() => {
+        console.clear();
+        console.log("%cDỪNG LẠI!", "color: red; font-size: 40px; font-weight: bold; text-shadow: 2px 2px black;");
+        console.log("%cĐây là khu vực bảo mật. Mọi hành vi đánh cắp mã nguồn đều được ghi lại.", "color: white; font-size: 15px;");
+    }, 1000);
 </script>
 
     <nav class="sticky top-0 z-50 glass border-b border-white/5 py-4 px-6">
