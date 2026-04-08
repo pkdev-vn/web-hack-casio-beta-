@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bad Apple ROM Editor — fx-580VNX</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap');
+
+  :root {
+    --bg: #0a0a0a;
+    --panel: #111;
+    --border: #2a2a2a;
+    --green: #00ff88;
+    --green2: #00cc66;
+    --amber: #ffb800;
+    --red: #ff3355;
+    --dim: #444;
+    --text: #ccc;
+    --white: #eee;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #0d0d0d;
+  }
+
+  .logo {
+    font-family: 'VT323', monospace;
+    font-size: 28px;
+    color: var(--green);
+    letter-spacing: 2px;
+    text-shadow: 0 0 20px #00ff8866;
+  }
+
+  .subtitle {
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 1px;
+  }
+
+  .badge {
+    margin-left: auto;
+    font-size: 10px;
+    padding: 3px 8px;
+    border: 1px solid var(--green2);
+    color: var(--green2);
+    border-radius: 2px;
+    letter-spacing: 1px;
+  }
+
+  .main {
+    display: grid;
+    grid-template-columns: 280px 1fr 260px;
+    gap: 0;
+    flex: 1;
+    height: calc(100vh - 53px);
+    overflow: hidden;
+  }
+
+  .panel {
+    border-right: 1px solid var(--border);
+    padding: 14px;
+    overflow-y: auto;
+    background: var(--panel);
+  }
+
+  .panel:last-child { border-right: none; }
+
+  .section-title {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* LEFT: File & controls */
+  .file-drop {
+    border: 1px dashed var(--border);
+    border-radius: 3px;
+    padding: 20px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: var(--dim);
+  }
+  .file-drop:hover, .file-drop.drag { border-color: var(--green); background: #00ff8808; color: var(--green); }
+  .file-drop input { display: none; }
+
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    padding: 4px 0;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  .info-row .label { color: var(--dim); }
+  .info-row .val { color: var(--amber); }
+
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    margin-top: 8px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all .15s;
+    text-align: center;
+  }
+  .btn:hover { border-color: var(--green); color: var(--green); background: #00ff8808; }
+  .btn.primary { border-color: var(--green2); color: var(--green2); }
+  .btn.primary:hover { background: #00ff8820; }
+  .btn.danger { border-color: var(--red); color: var(--red); }
+  .btn.danger:hover { background: #ff335520; }
+  .btn:disabled { opacity: .3; cursor: not-allowed; }
+
+  /* Playback controls */
+  .playback {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .playback .btn { flex: 1; padding: 6px 4px; font-size: 16px; margin: 0; }
+
+  .slider-row {
+    margin-top: 10px;
+  }
+  .slider-row label { font-size: 11px; color: var(--dim); display: block; margin-bottom: 4px; }
+  input[type=range] {
+    width: 100%;
+    accent-color: var(--green);
+    cursor: pointer;
+  }
+  input[type=number] {
+    background: #0a0a0a;
+    border: 1px solid var(--border);
+    color: var(--amber);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    padding: 4px 6px;
+    width: 70px;
+  }
+
+  /* CENTER: Canvas area */
+  .canvas-area {
+    background: #080808;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  .lcd-wrapper {
+    background: #1a1c0f;
+    border: 2px solid #3a3c2f;
+    border-radius: 4px;
+    padding: 12px;
+    box-shadow: 0 0 40px #00000088, inset 0 0 20px #00000044;
+    margin-bottom: 14px;
+  }
+
+  .lcd-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: #4a4c3f;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  canvas#lcd {
+    display: block;
+    image-rendering: pixelated;
+  }
+
+  .frame-info {
+    font-size: 11px;
+    color: var(--dim);
+    text-align: center;
+    margin-top: 8px;
+    letter-spacing: 1px;
+  }
+  .frame-info span { color: var(--amber); }
+
+  /* Zoom controls */
+  .zoom-bar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 11px;
+    color: var(--dim);
+  }
+  .zoom-bar .btn { width: auto; padding: 4px 10px; margin: 0; font-size: 14px; }
+
+  /* Draw mode */
+  .draw-mode {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .draw-mode .btn { flex: 1; padding: 5px 6px; font-size: 11px; margin: 0; min-width: 60px; }
+  .draw-mode .btn.active { border-color: var(--amber); color: var(--amber); background: #ffb80010; }
+
+  /* Frame scrubber */
+  .scrubber {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  /* RIGHT: Frame list & hex */
+  .frame-list {
+    height: 180px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    font-size: 10px;
+    margin-bottom: 12px;
+  }
+  .frame-item {
+    padding: 3px 8px;
+    cursor: pointer;
+    border-bottom: 1px solid #1a1a1a;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    white-space: nowrap;
+    font-size: 10px;
+  }
+  .frame-item:hover { background: #1a1a1a; }
+  .frame-item.active { background: #00ff8812; color: var(--green); }
+  .frame-item .fn { color: var(--dim); width: 36px; }
+  .frame-item .fb { color: var(--amber); font-size: 9px; }
+  .frame-item .thumb {
+    width: 48px; height: 10px;
+    background: #0a0a0a;
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  .hex-view {
+    background: #060606;
+    border: 1px solid var(--border);
+    padding: 8px;
+    font-size: 10px;
+    line-height: 1.6;
+    overflow-x: auto;
+    white-space: pre;
+    max-height: 180px;
+    overflow-y: auto;
+  }
+  .hex-view .hex-off { color: var(--dim); }
+  .hex-view .hex-val { color: var(--green2); }
+  .hex-view .hex-sep { color: var(--amber); }
+  .hex-view .hex-asc { color: #444; }
+
+  /* Status bar */
+  .statusbar {
+    border-top: 1px solid var(--border);
+    padding: 4px 14px;
+    font-size: 10px;
+    color: var(--dim);
+    display: flex;
+    gap: 20px;
+    letter-spacing: 1px;
+    background: #0d0d0d;
+  }
+  .statusbar span { color: var(--green2); }
+
+  /* Notification */
+  .notif {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--green2);
+    color: #000;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    padding: 8px 20px;
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity .3s;
+    pointer-events: none;
+    z-index: 999;
+    letter-spacing: 1px;
+  }
+  .notif.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">BAD APPLE ROM EDITOR</div>
+  <div class="subtitle">fx-580VNX / nX-U8 — Video Frame Tool</div>
+  <div class="badge">v1.0</div>
+</header>
+
+<div class="main">
+
+  <!-- LEFT PANEL -->
+  <div class="panel">
+    <div class="section-title">ROM FILE</div>
+    <div class="file-drop" id="dropzone" onclick="document.getElementById('fileInput').click()">
+      <div>📁 Kéo thả hoặc click</div>
+      <div style="margin-top:4px;font-size:10px">rom.bin (256KB)</div>
+      <input type="file" id="fileInput" accept=".bin">
+    </div>
+
+    <div id="fileInfo" style="display:none">
+      <div class="info-row"><span class="label">FILE</span><span class="val" id="infoName">—</span></div>
+      <div class="info-row"><span class="label">SIZE</span><span class="val" id="infoSize">—</span></div>
+      <div class="info-row"><span class="label">FRAMES</span><span class="val" id="infoFrames">—</span></div>
+      <div class="info-row"><span class="label">VIDEO @</span><span class="val">0x0E931</span></div>
+      <div class="info-row"><span class="label">FRAME SZ</span><span class="val">37 bytes</span></div>
+      <div class="info-row"><span class="label">RES</span><span class="val">96×24 px</span></div>
+    </div>
+
+    <div class="section-title" style="margin-top:16px">PLAYBACK</div>
+    <div class="playback">
+      <button class="btn" id="btnPrev" onclick="prevFrame()" disabled>◀</button>
+      <button class="btn primary" id="btnPlay" onclick="togglePlay()" disabled>▶</button>
+      <button class="btn" id="btnNext" onclick="nextFrame()" disabled>▶▶</button>
+    </div>
+    <div class="slider-row">
+      <label>FPS: <span id="fpsLabel">15</span></label>
+      <input type="range" id="fpsSlider" min="1" max="60" value="15" oninput="setFps(this.value)">
+    </div>
+    <div class="slider-row">
+      <label>FRAME: <input type="number" id="frameInput" value="0" min="0" style="width:60px" onchange="gotoFrame(+this.value)"></label>
+      <input type="range" id="scrubber" min="0" max="100" value="0" oninput="gotoFrame(+this.value)" disabled>
+    </div>
+
+    <div class="section-title" style="margin-top:16px">DRAW TOOLS</div>
+    <div class="draw-mode">
+      <button class="btn active" id="modeDraw" onclick="setMode('draw')">✏ DRAW</button>
+      <button class="btn" id="modeErase" onclick="setMode('erase')">⬜ ERASE</button>
+      <button class="btn" id="modeFill" onclick="setMode('fill')">▓ FILL</button>
+      <button class="btn" id="modeInvert" onclick="setMode('invert')">⬛ INV</button>
+    </div>
+
+    <button class="btn" onclick="clearFrame(false)">CLEAR (black)</button>
+    <button class="btn" onclick="clearFrame(true)">FILL (white)</button>
+    <button class="btn" onclick="copyFrame()">COPY FRAME</button>
+    <button class="btn" onclick="pasteFrame()" id="btnPaste" disabled>PASTE FRAME</button>
+    <button class="btn" onclick="insertBlankFrame()">INSERT BLANK</button>
+    <button class="btn danger" onclick="deleteFrame()" id="btnDelete" disabled>DELETE FRAME</button>
+
+    <div class="section-title" style="margin-top:16px">EXPORT</div>
+    <button class="btn primary" onclick="exportROM()" id="btnExport" disabled>💾 EXPORT ROM</button>
+    <button class="btn" onclick="exportFramesPNG()" id="btnExportPNG" disabled>🖼 EXPORT FRAMES PNG</button>
+  </div>
+
+  <!-- CENTER: Canvas -->
+  <div class="canvas-area">
+    <div class="zoom-bar">
+      <span>ZOOM</span>
+      <button class="btn" onclick="setZoom(zoom-1)">−</button>
+      <span id="zoomLabel">4×</span>
+      <button class="btn" onclick="setZoom(zoom+1)">+</button>
+      <span style="margin-left:10px">GRID</span>
+      <button class="btn" onclick="toggleGrid()" id="btnGrid">OFF</button>
+    </div>
+    <div class="lcd-wrapper">
+      <div class="lcd-label">CASIO fx-580VNX LCD</div>
+      <canvas id="lcd" width="384" height="96"></canvas>
+    </div>
+    <div class="frame-info" id="frameInfo">Load ROM để bắt đầu — <span>0x0E931</span> video offset</div>
+    <div class="draw-mode" style="margin-top:10px; gap:4px">
+      <button class="btn" onclick="invertCurrentFrame()">INVERT FRAME</button>
+      <button class="btn" onclick="shiftFrame('left')">◀ SHIFT</button>
+      <button class="btn" onclick="shiftFrame('right')">SHIFT ▶</button>
+      <button class="btn" onclick="shiftFrame('up')">▲ SHIFT</button>
+      <button class="btn" onclick="shiftFrame('down')">SHIFT ▼</button>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="panel">
+    <div class="section-title">FRAME LIST</div>
+    <div class="frame-list" id="frameList"></div>
+
+    <div class="section-title">HEX VIEW</div>
+    <div class="hex-view" id="hexView">Load ROM...</div>
+
+    <div class="section-title" style="margin-top:10px">FRAME STATS</div>
+    <div id="frameStats" style="font-size:11px; line-height:1.8">
+      <div class="info-row"><span class="label">FRAME #</span><span class="val" id="statFrame">—</span></div>
+      <div class="info-row"><span class="label">ROM ADDR</span><span class="val" id="statAddr">—</span></div>
+      <div class="info-row"><span class="label">WHITE PX</span><span class="val" id="statWhite">—</span></div>
+      <div class="info-row"><span class="label">BLACK PX</span><span class="val" id="statBlack">—</span></div>
+      <div class="info-row"><span class="label">SEPARATOR</span><span class="val" id="statSep">—</span></div>
+    </div>
+
+    <div class="section-title" style="margin-top:10px">BATCH EDIT</div>
+    <div style="font-size:11px; color:var(--dim); margin-bottom:6px">Frames:</div>
+    <div style="display:flex; gap:6px; align-items:center; font-size:11px">
+      <input type="number" id="batchFrom" value="0" min="0" style="width:55px">
+      <span style="color:var(--dim)">to</span>
+      <input type="number" id="batchTo" value="10" min="0" style="width:55px">
+    </div>
+    <button class="btn" onclick="batchInvert()" style="margin-top:6px">INVERT RANGE</button>
+    <button class="btn" onclick="batchClear(false)" style="margin-top:4px">CLEAR RANGE (black)</button>
+    <button class="btn" onclick="batchClear(true)" style="margin-top:4px">CLEAR RANGE (white)</button>
+  </div>
+</div>
+
+<div class="statusbar">
+  <div>CURSOR: <span id="statusCursor">—</span></div>
+  <div>MODE: <span id="statusMode">draw</span></div>
+  <div>MODIFIED: <span id="statusMod">0</span> frames</div>
+  <div>ROM: <span id="statusLoaded">not loaded</span></div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script>
+// ============================================================
+// ROM BAD APPLE EDITOR
+// ============================================================
+
+const VIDEO_START = 0x0E931;
+const FRAME_SIZE  = 37;
+const DATA_BYTES  = 36;
+const FRAME_W     = 96;   // pixels
+const FRAME_H     = 24;   // pixels (3 rows x 8px)
+const BYTES_ROW   = 12;   // 96/8
+
+let romData = null;
+let frames  = [];       // Array of Uint8Array(37)
+let currentFrame = 0;
+let playing = false;
+let playTimer = null;
+let fps = 15;
+let zoom = 4;
+let showGrid = false;
+let drawMode = 'draw';
+let clipBoard = null;
+let modifiedFrames = new Set();
+let isMouseDown = false;
+let lastCell = null;
+
+const canvas = document.getElementById('lcd');
+const ctx = canvas.getContext('2d');
+
+// ============================================================
+// FILE LOADING
+// ============================================================
+document.getElementById('fileInput').addEventListener('change', e => {
+  loadFile(e.target.files[0]);
+});
+
+const dz = document.getElementById('dropzone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+dz.addEventListener('drop', e => {
+  e.preventDefault();
+  dz.classList.remove('drag');
+  if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+});
+
+function loadFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    romData = new Uint8Array(e.target.result);
+    parseROM();
+  };
+  reader.readAsArrayBuffer(file);
+  document.getElementById('infoName').textContent = file.name.substring(0,16);
+  document.getElementById('infoSize').textContent = (file.size/1024).toFixed(0)+'KB';
+}
+
+function parseROM() {
+  frames = [];
+  let off = VIDEO_START;
+  while (off + FRAME_SIZE <= romData.length) {
+    const f = new Uint8Array(FRAME_SIZE);
+    for (let i=0; i<FRAME_SIZE; i++) f[i] = romData[off+i];
+    frames.push(f);
+    off += FRAME_SIZE;
+    if (frames.length >= 5000) break;
+  }
+
+  document.getElementById('infoFrames').textContent = frames.length;
+  document.getElementById('fileInfo').style.display = 'block';
+
+  const scrubber = document.getElementById('scrubber');
+  scrubber.max = frames.length - 1;
+  scrubber.disabled = false;
+  document.getElementById('btnPlay').disabled = false;
+  document.getElementById('btnPrev').disabled = false;
+  document.getElementById('btnNext').disabled = false;
+  document.getElementById('btnExport').disabled = false;
+  document.getElementById('btnExportPNG').disabled = false;
+  document.getElementById('btnDelete').disabled = false;
+
+  buildFrameList();
+  gotoFrame(0);
+  showNotif(`Loaded ${frames.length} frames`);
+  document.getElementById('statusLoaded').textContent = 'LOADED';
+}
+
+// ============================================================
+// RENDERING
+// ============================================================
+function setZoom(z) {
+  zoom = Math.max(1, Math.min(8, z));
+  canvas.width  = FRAME_W * zoom;
+  canvas.height = FRAME_H * zoom;
+  document.getElementById('zoomLabel').textContent = zoom + '×';
+  renderFrame();
+}
+
+function toggleGrid() {
+  showGrid = !showGrid;
+  document.getElementById('btnGrid').textContent = showGrid ? 'ON' : 'OFF';
+  renderFrame();
+}
+
+function renderFrame() {
+  if (!frames.length) return;
+  const f = frames[currentFrame];
+  ctx.imageSmoothingEnabled = false;
+
+  // Background (LCD green tint)
+  ctx.fillStyle = '#1a1c0f';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Pixels
+  for (let row=0; row<FRAME_H; row++) {
+    for (let col=0; col<FRAME_W; col++) {
+      const byteIdx = row * BYTES_ROW + Math.floor(col/8);
+      const bit = 7 - (col % 8);
+      const on = (f[byteIdx] >> bit) & 1;
+      ctx.fillStyle = on ? '#c8d07a' : '#1a1c0f';
+      ctx.fillRect(col*zoom, row*zoom, zoom, zoom);
+    }
+  }
+
+  // Grid
+  if (showGrid && zoom >= 3) {
+    ctx.strokeStyle = '#2a2c1f44';
+    ctx.lineWidth = 0.5;
+    for (let c=0; c<=FRAME_W; c++) { ctx.beginPath(); ctx.moveTo(c*zoom,0); ctx.lineTo(c*zoom,canvas.height); ctx.stroke(); }
+    for (let r=0; r<=FRAME_H; r++) { ctx.beginPath(); ctx.moveTo(0,r*zoom); ctx.lineTo(canvas.width,r*zoom); ctx.stroke(); }
+  }
+
+  // Update info
+  const addr = VIDEO_START + currentFrame * FRAME_SIZE;
+  document.getElementById('frameInfo').innerHTML =
+    `FRAME <span>${currentFrame}</span> / ${frames.length-1} &nbsp;|&nbsp; ROM: <span>0x${addr.toString(16).toUpperCase()}</span> &nbsp;|&nbsp; SEP: <span>0x${f[36].toString(16).toUpperCase()}</span>`;
+  document.getElementById('frameInput').value = currentFrame;
+  document.getElementById('scrubber').value = currentFrame;
+
+  // Stats
+  let whites = 0;
+  for (let i=0; i<DATA_BYTES; i++) {
+    let b = f[i];
+    while(b) { whites += b&1; b>>=1; }
+  }
+  document.getElementById('statFrame').textContent = currentFrame;
+  document.getElementById('statAddr').textContent = '0x'+addr.toString(16).toUpperCase();
+  document.getElementById('statWhite').textContent = whites + ' / ' + (FRAME_W*FRAME_H);
+  document.getElementById('statBlack').textContent = (FRAME_W*FRAME_H - whites) + ' / ' + (FRAME_W*FRAME_H);
+  document.getElementById('statSep').textContent = '0x'+f[36].toString(16).toUpperCase().padStart(2,'0');
+
+  updateHexView();
+  highlightFrameList();
+}
+
+function updateHexView() {
+  if (!frames.length) return;
+  const f = frames[currentFrame];
+  let html = '';
+  const addr = VIDEO_START + currentFrame * FRAME_SIZE;
+  for (let i=0; i<FRAME_SIZE; i+=8) {
+    const off = (addr+i).toString(16).toUpperCase().padStart(5,'0');
+    html += `<span class="hex-off">${off}:</span> `;
+    for (let j=i; j<Math.min(i+8, FRAME_SIZE); j++) {
+      const cls = j===36 ? 'hex-sep' : 'hex-val';
+      html += `<span class="${cls}">${f[j].toString(16).toUpperCase().padStart(2,'0')}</span> `;
+    }
+    html += ' <span class="hex-asc">';
+    for (let j=i; j<Math.min(i+8, FRAME_SIZE); j++) {
+      const c = f[j]; html += (c>=32&&c<127) ? String.fromCharCode(c) : '.';
+    }
+    html += '</span>\n';
+  }
+  document.getElementById('hexView').innerHTML = html;
+}
+
+// ============================================================
+// FRAME LIST
+// ============================================================
+function buildFrameList() {
+  const list = document.getElementById('frameList');
+  list.innerHTML = '';
+  const visible = Math.min(frames.length, 500);
+  for (let i=0; i<visible; i++) {
+    const item = document.createElement('div');
+    item.className = 'frame-item';
+    item.id = 'fi'+i;
+    item.onclick = () => gotoFrame(i);
+
+    // Mini thumbnail (48 pixels = 6 bytes)
+    const th = document.createElement('canvas');
+    th.className = 'thumb';
+    th.width = 48; th.height = 8;
+    const tc = th.getContext('2d');
+    tc.imageSmoothingEnabled = false;
+    const f = frames[i];
+    for (let col=0; col<48; col++) {
+      const bIdx = Math.floor(col/8);
+      const bit = 7-(col%8);
+      const on = (f[bIdx]>>bit)&1;
+      tc.fillStyle = on ? '#c8d07a' : '#1a1c0f';
+      tc.fillRect(col,0,1,8);
+    }
+
+    const ff = (i+'').padStart(4,'0');
+    item.innerHTML = `<span class="fn">#${ff}</span>`;
+    item.appendChild(th);
+    const pct = Math.round(calcWhitePct(f)*100);
+    item.innerHTML += `<span class="fb">${pct}%</span>`;
+    if (modifiedFrames.has(i)) item.style.borderLeft = '2px solid var(--amber)';
+    list.appendChild(item);
+  }
+  if (frames.length > 500) {
+    const more = document.createElement('div');
+    more.className = 'frame-item';
+    more.style.color = 'var(--dim)';
+    more.textContent = `... ${frames.length-500} more frames`;
+    list.appendChild(more);
+  }
+}
+
+function highlightFrameList() {
+  document.querySelectorAll('.frame-item.active').forEach(e => e.classList.remove('active'));
+  const el = document.getElementById('fi'+currentFrame);
+  if (el) { el.classList.add('active'); el.scrollIntoView({block:'nearest'}); }
+}
+
+function calcWhitePct(f) {
+  let w = 0;
+  for (let i=0; i<DATA_BYTES; i++) { let b=f[i]; while(b){w+=b&1;b>>=1;} }
+  return w/(FRAME_W*FRAME_H);
+}
+
+// ============================================================
+// NAVIGATION & PLAYBACK
+// ============================================================
+function gotoFrame(n) {
+  currentFrame = Math.max(0, Math.min(frames.length-1, n));
+  renderFrame();
+}
+
+function prevFrame() { gotoFrame(currentFrame-1); }
+function nextFrame() { gotoFrame(currentFrame+1); }
+
+function togglePlay() {
+  playing = !playing;
+  document.getElementById('btnPlay').textContent = playing ? '⏸' : '▶';
+  if (playing) {
+    const step = () => {
+      if (!playing) return;
+      currentFrame = (currentFrame+1) % frames.length;
+      renderFrame();
+      playTimer = setTimeout(step, 1000/fps);
+    };
+    step();
+  } else {
+    clearTimeout(playTimer);
+  }
+}
+
+function setFps(v) {
+  fps = +v;
+  document.getElementById('fpsLabel').textContent = v;
+}
+
+// ============================================================
+// DRAWING
+// ============================================================
+canvas.addEventListener('mousedown', e => { isMouseDown=true; handleDraw(e); });
+canvas.addEventListener('mousemove', e => { if(isMouseDown) handleDraw(e); updateCursor(e); });
+canvas.addEventListener('mouseup', () => { isMouseDown=false; lastCell=null; });
+canvas.addEventListener('mouseleave', () => { isMouseDown=false; lastCell=null; });
+
+function getCell(e) {
+  const rect = canvas.getBoundingClientRect();
+  const x = Math.floor((e.clientX-rect.left)/zoom);
+  const y = Math.floor((e.clientY-rect.top)/zoom);
+  return {x, y};
+}
+
+function updateCursor(e) {
+  const {x,y} = getCell(e);
+  document.getElementById('statusCursor').textContent = `${x},${y}`;
+}
+
+function handleDraw(e) {
+  if (!frames.length) return;
+  const {x,y} = getCell(e);
+  if (x<0||x>=FRAME_W||y<0||y>=FRAME_H) return;
+  const key = x+','+y;
+  if (key===lastCell) return;
+  lastCell=key;
+
+  if (drawMode==='fill') { floodFill(x,y,e.buttons===2); return; }
+  setPixel(currentFrame, x, y, drawMode==='draw' ? 1 : drawMode==='erase' ? 0 : -1);
+  markModified(currentFrame);
+  renderFrame();
+}
+
+function setPixel(fi, x, y, val) {
+  const f = frames[fi];
+  const byteIdx = y*BYTES_ROW + Math.floor(x/8);
+  const bit = 7-(x%8);
+  if (val===-1) { f[byteIdx] ^= (1<<bit); }
+  else if (val===1) { f[byteIdx] |= (1<<bit); }
+  else { f[byteIdx] &= ~(1<<bit); }
+}
+
+function floodFill(sx, sy, fillVal) {
+  const f = frames[currentFrame];
+  const getP = (x,y)=>(f[y*BYTES_ROW+Math.floor(x/8)]>>(7-x%8))&1;
+  const target = getP(sx,sy);
+  const fill = fillVal?0:1;
+  if (target===fill) return;
+  const stack = [[sx,sy]];
+  const seen = new Set();
+  while (stack.length) {
+    const [x,y] = stack.pop();
+    if (x<0||x>=FRAME_W||y<0||y>=FRAME_H) continue;
+    const k=x+','+y;
+    if (seen.has(k)) continue;
+    seen.add(k);
+    if (getP(x,y)!==target) continue;
+    setPixel(currentFrame,x,y,fill);
+    stack.push([x+1,y],[x-1,y],[x,y+1],[x,y-1]);
+  }
+  markModified(currentFrame);
+  renderFrame();
+}
+
+function setMode(m) {
+  drawMode=m;
+  document.querySelectorAll('.draw-mode .btn').forEach(b=>b.classList.remove('active'));
+  const map={'draw':'modeDraw','erase':'modeErase','fill':'modeFill','invert':'modeInvert'};
+  document.getElementById(map[m]).classList.add('active');
+  document.getElementById('statusMode').textContent = m.toUpperCase();
+}
+
+// ============================================================
+// FRAME OPERATIONS
+// ============================================================
+function markModified(i) {
+  modifiedFrames.add(i);
+  document.getElementById('statusMod').textContent = modifiedFrames.size;
+  const el=document.getElementById('fi'+i);
+  if(el) el.style.borderLeft='2px solid var(--amber)';
+}
+
+function clearFrame(white) {
+  const val = white ? 0xFF : 0x00;
+  for (let i=0;i<DATA_BYTES;i++) frames[currentFrame][i]=val;
+  markModified(currentFrame); renderFrame();
+}
+
+function invertCurrentFrame() {
+  for (let i=0;i<DATA_BYTES;i++) frames[currentFrame][i]^=0xFF;
+  markModified(currentFrame); renderFrame();
+}
+
+function shiftFrame(dir) {
+  const f=frames[currentFrame];
+  if (dir==='left'||dir==='right') {
+    for (let row=0;row<FRAME_H;row++) {
+      const rowBits=[];
+      for (let col=0;col<FRAME_W;col++) {
+        const bIdx=row*BYTES_ROW+Math.floor(col/8);
+        rowBits.push((f[bIdx]>>(7-col%8))&1);
+      }
+      if(dir==='left') rowBits.push(rowBits.shift());
+      else rowBits.unshift(rowBits.pop());
+      for (let col=0;col<FRAME_W;col++) {
+        const bIdx=row*BYTES_ROW+Math.floor(col/8);
+        const bit=7-col%8;
+        if(rowBits[col]) f[bIdx]|=(1<<bit); else f[bIdx]&=~(1<<bit);
+      }
+    }
+  } else {
+    const tmp=new Uint8Array(DATA_BYTES);
+    if(dir==='up') {
+      tmp.set(f.slice(BYTES_ROW,DATA_BYTES));
+      tmp.set(f.slice(0,BYTES_ROW),DATA_BYTES-BYTES_ROW);
+    } else {
+      tmp.set(f.slice(0,DATA_BYTES-BYTES_ROW),BYTES_ROW);
+      tmp.set(f.slice(DATA_BYTES-BYTES_ROW,DATA_BYTES),0);
+    }
+    for(let i=0;i<DATA_BYTES;i++) f[i]=tmp[i];
+  }
+  markModified(currentFrame); renderFrame();
+}
+
+function copyFrame() {
+  clipBoard=new Uint8Array(frames[currentFrame]);
+  document.getElementById('btnPaste').disabled=false;
+  showNotif('Frame copied');
+}
+
+function pasteFrame() {
+  if(!clipBoard) return;
+  for(let i=0;i<DATA_BYTES;i++) frames[currentFrame][i]=clipBoard[i];
+  markModified(currentFrame); renderFrame(); showNotif('Pasted');
+}
+
+function insertBlankFrame() {
+  const blank=new Uint8Array(FRAME_SIZE).fill(0xFF);
+  frames.splice(currentFrame+1,0,blank);
+  markModified(currentFrame+1);
+  document.getElementById('scrubber').max=frames.length-1;
+  buildFrameList(); gotoFrame(currentFrame+1);
+  showNotif('Inserted blank frame');
+}
+
+function deleteFrame() {
+  if(frames.length<=1) return;
+  frames.splice(currentFrame,1);
+  document.getElementById('scrubber').max=frames.length-1;
+  buildFrameList(); gotoFrame(Math.min(currentFrame,frames.length-1));
+  showNotif('Deleted frame');
+}
+
+// ============================================================
+// BATCH OPERATIONS
+// ============================================================
+function batchInvert() {
+  const from=+document.getElementById('batchFrom').value;
+  const to=Math.min(+document.getElementById('batchTo').value,frames.length-1);
+  for(let i=from;i<=to;i++){
+    for(let j=0;j<DATA_BYTES;j++) frames[i][j]^=0xFF;
+    markModified(i);
+  }
+  buildFrameList(); renderFrame(); showNotif(`Inverted frames ${from}-${to}`);
+}
+
+function batchClear(white) {
+  const from=+document.getElementById('batchFrom').value;
+  const to=Math.min(+document.getElementById('batchTo').value,frames.length-1);
+  const val=white?0xFF:0x00;
+  for(let i=from;i<=to;i++){
+    for(let j=0;j<DATA_BYTES;j++) frames[i][j]=val;
+    markModified(i);
+  }
+  buildFrameList(); renderFrame(); showNotif(`Cleared frames ${from}-${to}`);
+}
+
+// ============================================================
+// EXPORT
+// ============================================================
+function exportROM() {
+  if(!romData) return;
+  const out=new Uint8Array(romData);
+  // Write frames back
+  for(let i=0;i<frames.length;i++){
+    const off=VIDEO_START+i*FRAME_SIZE;
+    if(off+FRAME_SIZE<=out.length) out.set(frames[i],off);
+  }
+  const blob=new Blob([out],{type:'application/octet-stream'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download='rom_edited.bin'; a.click();
+  URL.revokeObjectURL(url);
+  showNotif(`Exported ROM (${modifiedFrames.size} frames modified)`);
+}
+
+function exportFramesPNG() {
+  // Export all frames as sprite sheet PNG
+  const cols=32;
+  const rows=Math.ceil(frames.length/cols);
+  const PX=3; // scale
+  const W=FRAME_W*PX*cols, H=FRAME_H*PX*rows;
+  const off=document.createElement('canvas');
+  off.width=W; off.height=H;
+  const c=off.getContext('2d');
+  c.fillStyle='#1a1c0f'; c.fillRect(0,0,W,H);
+
+  frames.forEach((f,idx)=>{
+    const cx=(idx%cols)*FRAME_W*PX;
+    const cy=Math.floor(idx/cols)*FRAME_H*PX;
+    for(let row=0;row<FRAME_H;row++){
+      for(let col=0;col<FRAME_W;col++){
+        const bIdx=row*BYTES_ROW+Math.floor(col/8);
+        const bit=7-col%8;
+        const on=(f[bIdx]>>bit)&1;
+        c.fillStyle=on?'#c8d07a':'#1a1c0f';
+        c.fillRect(cx+col*PX, cy+row*PX, PX, PX);
+      }
+    }
+  });
+
+  off.toBlob(blob=>{
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download='bad_apple_frames.png'; a.click();
+    URL.revokeObjectURL(url);
+  });
+  showNotif('Exported sprite sheet PNG');
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function showNotif(msg) {
+  const n=document.getElementById('notif');
+  n.textContent=msg; n.classList.add('show');
+  setTimeout(()=>n.classList.remove('show'),2000);
+}
+
+canvas.addEventListener('contextmenu',e=>e.preventDefault());
+
+// Init
+setZoom(4);
+</script>
+</body>
+</html>
